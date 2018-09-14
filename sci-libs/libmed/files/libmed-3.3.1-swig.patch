@@ -1,0 +1,204 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index dab6b2a..99ba9f6 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -91,10 +91,10 @@ MED_FIND_HDF5()
+ MED_FIND_MPI()
+ 
+ IF(MEDFILE_BUILD_PYTHON)
++  FIND_PACKAGE(PythonInterp REQUIRED)  # to get version string ...
++  FIND_PACKAGE(PythonLibs REQUIRED)
+   FIND_PACKAGE(SWIG REQUIRED)
+   INCLUDE(${SWIG_USE_FILE})
+-  FIND_PACKAGE(PythonLibs REQUIRED)
+-  FIND_PACKAGE(PythonInterp REQUIRED)  # to get version string ...
+ ENDIF()
+ 
+ ## Creation of files med_config.h.cmake
+diff --git a/python/CMakeLists.txt b/med-3.3.1_SRC/python/CMakeLists.txt
+index 1e45797..f21e3e9 100644
+--- a/python/CMakeLists.txt
++++ b/python/CMakeLists.txt
+@@ -43,7 +46,7 @@ SET(CMAKE_SWIG_OUTDIR med)
+ FILE(COPY "__init__.py" DESTINATION ${PROJECT_BINARY_DIR}/python/med)
+ 
+ FOREACH(f ${_swig_files})
+-  SET_SOURCE_FILES_PROPERTIES(${f} PROPERTIES CPLUSPLUS ON SWIG_FLAGS "-shadow")
++  SET_SOURCE_FILES_PROPERTIES(${f} PROPERTIES CPLUSPLUS ON SWIG_FLAGS "-shadow;-py3")
+ 
+   # Get module name
+   STRING(REPLACE "_module.i" "" _module_name ${f})
+@@ -53,7 +56,7 @@ FOREACH(f ${_swig_files})
+   SET_SOURCE_FILES_PROPERTIES(${f} PROPERTIES SWIG_MODULE_NAME ${_module_name})
+ 
+   SET(SWIG_MODULE_libbatch_EXTRA_DEPS ${SWIG_LB_DPYS})
+-  SWIG_ADD_MODULE(${_module_name} python ${f})
++  SWIG_ADD_LIBRARY(${_module_name} LANGUAGE python SOURCES ${f})
+   SWIG_LINK_LIBRARIES(${_module_name} ${_link_libs})
+ 
+   INSTALL(TARGETS ${SWIG_MODULE_${_module_name}_REAL_NAME} DESTINATION ${_install_dir})
+diff --git a/python/medenum_module.i b/python/medenum_module.i
+index c9c97cd..5628b72 100644
+--- a/python/medenum_module.i
++++ b/python/medenum_module.i
+@@ -1,5 +1,5 @@
+ # -*- coding:utf-8 -*-
+-%module medenum
++%module(package="med") medenum
+ 
+ 
+ %include "typemaps.i"
+diff --git a/python/medenumtest_module.i b/python/medenumtest_module.i
+index efda37d..d443670 100644
+--- a/python/medenumtest_module.i
++++ b/python/medenumtest_module.i
+@@ -1,4 +1,4 @@
+-%module medenumtest
++%module(package="med") medenumtest
+ 
+ %include "typemaps.i"
+ 
+diff --git a/python/medequivalence_module.i b/python/medequivalence_module.i
+index 1fc99ed..51c3468 100644
+--- a/python/medequivalence_module.i
++++ b/python/medequivalence_module.i
+@@ -1,5 +1,5 @@
+ # -*- coding:utf-8 -*-
+-%module medequivalence
++%module(package="med") medequivalence
+ 
+ //A inclure avant toute déclaration à SWIG
+ %include "med_881.i"
+diff --git a/python/medfamily_module.i b/python/medfamily_module.i
+index 41c30e2..e530a8c 100644
+--- a/python/medfamily_module.i
++++ b/python/medfamily_module.i
+@@ -1,5 +1,5 @@
+ # -*- coding:utf-8 -*-
+-%module medfamily
++%module(package="med") medfamily
+ 
+ //A inclure avant toute déclaration à SWIG
+ %include "med_881.i"
+diff --git a/python/medfield_module.i b/python/medfield_module.i
+index 6c0d4a4..b733732 100644
+--- a/python/medfield_module.i
++++ b/python/medfield_module.i
+@@ -1,5 +1,5 @@
+ # -*- coding:utf-8 -*-
+-%module medfield
++%module(package="med") medfield
+ 
+ %include "med_881.i"
+ %SwigPyIteratorDef(medfield_module)
+diff --git a/python/medfile_module.i b/python/medfile_module.i
+index d96db3b..9eada94 100644
+--- a/python/medfile_module.i
++++ b/python/medfile_module.i
+@@ -1,5 +1,5 @@
+ # -*- coding:utf-8 -*-
+-%module medfile
++%module(package="med") medfile
+ 
+ //A inclure avant toute déclaration à SWIG
+ %include "med_881.i"
+diff --git a/python/medfilter_module.i b/python/medfilter_module.i
+index 848832a..32d6ca7 100644
+--- a/python/medfilter_module.i
++++ b/python/medfilter_module.i
+@@ -1,5 +1,5 @@
+ # -*- coding:utf-8 -*-
+-%module medfilter
++%module(package="med") medfilter
+ 
+ //A inclure avant toute déclaration à SWIG
+ %include "med_881.i"
+diff --git a/python/medinterp_module.i b/python/medinterp_module.i
+index 2aec65a..336af80 100644
+--- a/python/medinterp_module.i
++++ b/python/medinterp_module.i
+@@ -1,5 +1,5 @@
+ # -*- coding:utf-8 -*-
+-%module medinterp
++%module(package="med") medinterp
+ 
+ //A inclure avant toute déclaration à SWIG
+ %include "med_881.i"
+diff --git a/python/medlibrary_module.i b/python/medlibrary_module.i
+index f0a4f36..f7b4e71 100644
+--- a/python/medlibrary_module.i
++++ b/python/medlibrary_module.i
+@@ -1,5 +1,5 @@
+ # -*- coding:utf-8 -*-
+-%module medlibrary
++%module(package="med") medlibrary
+ 
+ %include "med_881.i"
+ %SwigPyIteratorDef(medlibrary_module)
+diff --git a/python/medlink_module.i b/python/medlink_module.i
+index ef23d5e..5ef8e7a 100644
+--- a/python/medlink_module.i
++++ b/python/medlink_module.i
+@@ -1,5 +1,5 @@
+ # -*- coding:utf-8 -*-
+-%module medlink
++%module(package="med") medlink
+ 
+ //A inclure avant toute déclaration à SWIG
+ %include "med_881.i"
+diff --git a/python/medlocalization_module.i b/python/medlocalization_module.i
+index e92630b..f3ce53a 100644
+--- a/python/medlocalization_module.i
++++ b/python/medlocalization_module.i
+@@ -1,5 +1,5 @@
+ # -*- coding:utf-8 -*-
+-%module medlocalization
++%module(package="med") medlocalization
+ 
+ //A inclure avant toute déclaration à SWIG
+ %include "med_881.i"
+diff --git a/python/medmesh_module.i b/python/medmesh_module.i
+index d8884ed..0885575 100644
+--- a/python/medmesh_module.i
++++ b/python/medmesh_module.i
+@@ -1,6 +1,6 @@
+ # -*- coding:utf-8 -*-
+ 
+-%module medmesh
++%module(package="med") medmesh
+ 
+ //A inclure avant toute déclaration à SWIG
+ %include "med_881.i"
+diff --git a/python/medparameter_module.i b/python/medparameter_module.i
+index 0dd0b82..80e0005 100644
+--- a/python/medparameter_module.i
++++ b/python/medparameter_module.i
+@@ -1,5 +1,5 @@
+ # -*- coding:utf-8 -*-
+-%module medparameter
++%module(package="med") medparameter
+ 
+ //A inclure avant toute déclaration à SWIG
+ %include "med_881.i"
+diff --git a/python/medprofile_module.i b/python/medprofile_module.i
+index 67f320e..a98a3b8 100644
+--- a/python/medprofile_module.i
++++ b/python/medprofile_module.i
+@@ -1,5 +1,5 @@
+ # -*- coding:utf-8 -*-
+-%module medprofile
++%module(package="med") medprofile
+ 
+ //A inclure avant toute déclaration à SWIG
+ %include "med_881.i"
+diff --git a/python/medsubdomain_module.i b/python/medsubdomain_module.i
+index e259cf1..f8e15ee 100644
+--- a/python/medsubdomain_module.i
++++ b/python/medsubdomain_module.i
+@@ -1,5 +1,5 @@
+ # -*- coding:utf-8 -*-
+-%module medsubdomain
++%module(package="med") medsubdomain
+ 
+ //A inclure avant toute déclaration à SWIG
+ %include "med_881.i"

@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
-#CMAKE_IN_SOURCE_BUILD=1
+CMAKE_IN_SOURCE_BUILD=1
 
 FORTRAN_NEEDED=fortran
 # NOTE:The build for multiple python versions should be possible but complecated for the build system
@@ -20,6 +20,7 @@ PATCHES=(
 	"${FILESDIR}/${P}-cmake-fortran.patch"
 	"${FILESDIR}/${P}-disable-python-compile.patch"
 	"${FILESDIR}/${P}-mpi.patch"
+	"${FILESDIR}/${P}-swig.patch"
 	"${FILESDIR}/${P}-hdf5-1.10-support.patch"  # taken from Debian
 	"${FILESDIR}/${P}-cmakelist.patch"
 	"${FILESDIR}/${P}-tests.patch"
@@ -71,9 +72,10 @@ src_configure() {
 	local myconf=(
 		--with-pic
 		--with-swig
+		--with-med_int=int
 		--with-int64=__int64_t
 	)
-	econf "${myconf[@]}" PYTHON_LDFLAGS="$(python_get_LIBS)" PYTHON_VERSION="${EPYTHON#python}" LDFLAGS="${LDFLAGS} $(python_get_LIBS)" CFLAGS="${CFLAGS} $(python_get_CFLAGS)"
+	#econf "${myconf[@]}" PYTHON_LDFLAGS="$(python_get_LIBS)" PYTHON_VERSION="${EPYTHON#python}" LDFLAGS="${LDFLAGS} $(python_get_LIBS)" CFLAGS="${CFLAGS} $(python_get_CFLAGS)"
 
 
 	local mycmakeargs=(
@@ -85,10 +87,10 @@ src_configure() {
 		-DMEDFILE_BUILD_TESTS=$(usex test)
 		-DMEDFILE_INSTALL_DOC=$(usex doc)
 		-DMEDFILE_BUILD_PYTHON=$(usex python)
-		-DMED_SWIG_INT64=__int64_t
-		-DMED_INT32=__int32_t
-		-DMED_INT64=__int64_t
-
+		-DPYTHON_LDFLAGS="$(python_get_LIBS)"
+		-DPYTHON_CFLAGS="$(python_get_CFLAGS)"
+		-DPYTHON_VERSION="${EPYTHON#*python}"
+		-DMED_SWIG_INT64=0
 	)
 
 	if use mpi; then
