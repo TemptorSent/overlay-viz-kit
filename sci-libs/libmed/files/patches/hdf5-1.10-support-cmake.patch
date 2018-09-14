@@ -1,0 +1,16 @@
+--- med-3.3.1_SRC/config/cmake_files/medMacros.cmake.orig	2018-09-13 22:20:26.403097847 -0000
++++ med-3.3.1_SRC/config/cmake_files/medMacros.cmake	2018-09-13 22:20:55.139097796 -0000
+@@ -396,10 +396,10 @@
+     FIND_PACKAGE(MedfileHDF5 REQUIRED)
+ 
+     ##
+-    ## Requires 1.8.x version
++	## Requires 1.10.x version (patched, was 1.8)
+     ##
+-    IF (NOT HDF_VERSION_MAJOR_REF EQUAL 1 OR NOT HDF_VERSION_MINOR_REF EQUAL 8)
+-        MESSAGE(FATAL_ERROR "HDF5 version is ${HDF_VERSION_REF}. Only 1.8.x versions are supported.")
++    IF (NOT HDF_VERSION_MAJOR_REF EQUAL 1 OR NOT HDF_VERSION_MINOR_REF EQUAL 10)
++        MESSAGE(FATAL_ERROR "HDF5 version is ${HDF_VERSION_REF}. Only 1.10.x versions are supported.")
+     ENDIF()
+     ##
+     ##
