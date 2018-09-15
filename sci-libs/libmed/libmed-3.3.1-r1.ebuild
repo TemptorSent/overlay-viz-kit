@@ -36,7 +36,7 @@ IUSE="+doc +fortran +python mpi static-libs test"
 REQUIRED_USE="python? ( ${PYTHON_REQUIRED_USE} )"
 
 RDEPEND="
-	sci-libs/hdf5[fortran=,mpi=]
+	=sci-libs/hdf5-1.8*[fortran=,mpi=]
 	mpi? ( virtual/mpi[fortran=] )
 	python? ( ${PYTHON_DEPS} )
 "
@@ -87,10 +87,6 @@ src_configure() {
 		-DMEDFILE_BUILD_TESTS=$(usex test)
 		-DMEDFILE_INSTALL_DOC=$(usex doc)
 		-DMEDFILE_BUILD_PYTHON=$(usex python)
-		-DPYTHON_LDFLAGS="$(python_get_LIBS)"
-		-DPYTHON_CFLAGS="$(python_get_CFLAGS)"
-		-DPYTHON_VERSION="${EPYTHON#*python}"
-		-DMED_SWIG_INT64=0
 	)
 
 	if use mpi; then
